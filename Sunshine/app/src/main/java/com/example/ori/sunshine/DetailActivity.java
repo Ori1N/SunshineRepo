@@ -1,20 +1,21 @@
 package com.example.ori.sunshine;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.TextView;
 
 
 public class DetailActivity extends ActionBarActivity {
+
+    final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,16 @@ public class DetailActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id)
+        {
+            // if the settings-option was selected
+            case R.id.action_settings:
+            {
+                Log.d(LOG_TAG, "Settings were selected.");
+                // call settings activity
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -65,8 +74,13 @@ public class DetailActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
             // on create - set text to received text
-            TextView textView = (TextView) rootView.findViewById(R.id.textview);
-            textView.setText(Intent.EXTRA_TEXT);
+            Intent intent = getActivity().getIntent();
+            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT))
+            {
+                String forecastText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                TextView textView = (TextView) rootView.findViewById(R.id.textview);
+                textView.setText(forecastText);
+            }
 
             return rootView;
         }

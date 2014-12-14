@@ -9,5 +9,13 @@
     <string name="action_refresh" translatable="false">Refresh</string>
     <string name="title_activity_detailed">DetailedActivity</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- the text for the location-label -->
+    <string name="pref_location_label">Location</string>
+    <!-- the key name for storing the location in SharedPreferences -->
+    <string name="pref_location_key">location</string>
+    <!-- the default postal code (location) -->
+    <string name="pref_location_default">94043</string>
 
 </resources>

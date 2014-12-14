@@ -1,13 +1,13 @@
 package com.example.ori.sunshine;
 
-import android.accounts.NetworkErrorException;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -53,6 +52,12 @@ public class ForecastFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
     /**/
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -63,13 +68,24 @@ public class ForecastFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        // if the refresh button was pressed
-        if (id == R.id.action_refresh) {
-            // call update weather
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            final String currentLocation = "94043";
-            weatherTask.execute(currentLocation);
-            return true;
+        switch (id)
+        {
+            // if the refresh-option was selected
+            case R.id.action_refresh:
+            {
+                Log.d(LOG_TAG, "The refresh option was selected from ForecastFragment.");
+                updateWeather();
+                return true;
+            }
+            // if the settings-option was selected
+            case R.id.action_settings:
+            {
+                Log.d(LOG_TAG, "The settings option was selected from ForecastFragment.");
+                // call different activity
+                Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -107,21 +123,29 @@ public class ForecastFragment extends Fragment {
         actualListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "A weather item was clicked.");
+
                 // get the selected forecast
                 String forecast = adapter.getItem(position);
-                // make a toast
-                //Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();
 
                 // call different activity
                 Intent detailIntent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(Intent.EXTRA_TEXT, forecast);
-                //detailIntent.setData(Uri.parse(fileUrl));
                 startActivity(detailIntent);
-                //  */
             }
         });
         //
         return rootView;
+    }
+
+
+    private void updateWeather() {
+        // call update weather
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(location);
     }
 
 
@@ -133,8 +157,8 @@ public class ForecastFragment extends Fragment {
         @Override
         protected String[] doInBackground(String... params) {
 
-            android.os.Debug.waitForDebugger();
-            Log.d(LOG_TAG, "Starting fetch weather..");
+            //android.os.Debug.waitForDebugger(); // only for debugging!!
+            Log.d(LOG_TAG, "Starting fetch weather for the location: " + params[0]);
 
             String[] finalArray = null;
 
@@ -243,6 +267,7 @@ public class ForecastFragment extends Fragment {
         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         protected void onPostExecute(String[] strings) {
+            Log.d(LOG_TAG, "FetchWeatherTask is over.");
             // if the request succeeded
             if (strings != null) {
                 try {

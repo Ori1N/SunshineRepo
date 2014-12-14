@@ -1,7 +1,10 @@
 package com.example.ori.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -50,9 +53,38 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             }
+            // if the on-map-option was selected
+            case R.id.action_map:
+            {
+                openPreferredLocationOnMap();
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void openPreferredLocationOnMap() {
+        // get the selected location from the shared-preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        // convert it to geographic location
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q", location).build();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+
+        // if the intent can be activated successfully
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            // run it
+            startActivity(intent);
+        // else
+        } else {
+            // log a warning message
+            Log.w(LOG_TAG, "Couldn't show the location in a map.");
+        }
     }
     //  */
 

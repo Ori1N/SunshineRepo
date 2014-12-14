@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- units-types values -->
+    <string-array name="pref_units_values">UnitTypesValues
+        <item>metric_type</item>
+        <item>imperial_type</item>
+    </string-array>
+    <!-- units-types descriptions -->
+    <string-array name="pref_units_options">UnitTypesDescription
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+</resources>

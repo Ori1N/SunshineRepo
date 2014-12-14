@@ -3,19 +3,36 @@
 
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
+
+    <!-- for manifest declarations -->
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
     <!-- settings menu button -->
     <string name="action_settings">Settings</string>
     <!-- refresh menu button (for debugging only) -->
     <string name="action_refresh" translatable="false">Refresh</string>
-    <string name="title_activity_detailed">DetailedActivity</string>
-    <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <!-- show on map menu-item -->
+    <string name="action_map">Show On Map</string>
+    <!-- share location (as a string..) -->
+    <string name="action_share">Share</string>
 
     <!-- the text for the location-label -->
     <string name="pref_location_label">Location</string>
+    <!-- the text for the units-label -->
+    <string name="pref_units_label">Temperature Units</string>
+
+
     <!-- the key name for storing the location in SharedPreferences -->
-    <string name="pref_location_key">location</string>
+    <string name="pref_location_key">location_key</string>
     <!-- the default postal code (location) -->
     <string name="pref_location_default">94043</string>
+
+    <!-- the key name for storing the units-type in SharedPreferences -->
+    <string name="pref_units_key">units_key</string>
+    <!-- the default unit-type (Celsius) -->
+    <string name="pref_units_metric">metric_type</string>
+    <!-- the default unit-type (Celsius) -->
+    <string name="pref_units_imperial">imperial_type</string>
 
 </resources>

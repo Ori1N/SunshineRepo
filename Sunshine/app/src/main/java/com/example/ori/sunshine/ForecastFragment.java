@@ -361,6 +361,10 @@ public class ForecastFragment extends Fragment {
              *
              * Fortunately parsing is easy:  constructor takes the JSON string and converts it
              * into an Object hierarchy for us.
+             * @param forecastJsonStr The JSON formatted string.
+             * @param numDays
+             * @return
+             * @throws JSONException
              */
             public String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
                     throws JSONException {

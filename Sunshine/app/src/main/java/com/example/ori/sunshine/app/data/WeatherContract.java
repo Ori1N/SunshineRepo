@@ -219,4 +219,5 @@ public class WeatherContract {
             return uri.getQueryParameter(COLUMN_DATETEXT);
         }
     }
+
 }

@@ -44,21 +44,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
-    private ArrayAdapter<String> mForecastAdapter;
     private final Context mContext;
 
-    public FetchWeatherTask(Context context, ArrayAdapter<String> forecastAdapter) {
+    public FetchWeatherTask(Context context) {
         mContext = context;
-        mForecastAdapter = forecastAdapter;
+        //mForecastAdapter = forecastAdapter;
     }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
      * so for convenience we're breaking it out into its own method now.
      */
+    /*
     private String getReadableDateString(long time) {
         // Because the API returns a unix timestamp (measured in seconds),
         // it must be converted to milliseconds in order to be converted to valid date.
@@ -66,10 +66,12 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         SimpleDateFormat format = new SimpleDateFormat("E, MMM d");
         return format.format(date).toString();
     }
+    //  */
 
     /**
      * Prepare the weather high/lows for presentation.
      */
+    /*
     private String formatHighLows(double high, double low) {
         // Data is fetched in Celsius by default.
         // If user prefers to see in Fahrenheit, convert the values here.
@@ -96,6 +98,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         String highLowStr = roundedHigh + "/" + roundedLow;
         return highLowStr;
     }
+    //  */
 
     /**
      * Take the String representing the complete forecast in JSON Format and
@@ -103,8 +106,13 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
      * <p/>
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
+     * <br/>
+     * This function also insert the received data to the database.
+     * <p/>
+     * (I would have preferred to separate the database insertion from this function,
+     * but I decided to leave the code as it is, not to change the source)
      */
-    private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays,
+    private void getWeatherDataFromJson(String forecastJsonStr, int numDays,
                                             String locationSetting)
             throws JSONException {
 
@@ -153,7 +161,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         // Get and insert the new weather information into the database
         Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
 
-        String[] resultStrs = new String[numDays];
+//        String[] resultStrs = new String[numDays];
 
         for (int i = 0; i < weatherArray.length(); i++) {
             // These are the values that will be collected.
@@ -212,9 +220,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
             cVVector.add(weatherValues);
 
-            String highAndLow = formatHighLows(high, low);
-            String day = getReadableDateString(dateTime);
-            resultStrs[i] = day + " - " + description + " - " + highAndLow;
+//            String highAndLow = formatHighLows(high, low);
+//            String day = getReadableDateString(dateTime);
+//            resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
         if (cVVector.size() > 0) {
@@ -225,7 +233,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             Log.v(LOG_TAG, "inserted " + rowsInserted + " rows of weather data");
         }
 
-        return resultStrs;
+//        return resultStrs;
     }
 
 
@@ -271,7 +279,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
 
         // If there's no zip code, there's nothing to look up.  Verify size of params.
         if (params.length == 0) {
@@ -357,7 +365,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         }
 
         try {
-            return getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery);
+            getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -367,6 +375,8 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         return null;
     }
 
+    /* not needed anymore - using Cursor Loader instead
+    private ArrayAdapter<String> mForecastAdapter;
     @Override
     protected void onPostExecute(String[] result) {
         if (result != null) {
@@ -377,4 +387,5 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             // New data is back from the server.  Hooray!
         }
     }
+    //  */
 }

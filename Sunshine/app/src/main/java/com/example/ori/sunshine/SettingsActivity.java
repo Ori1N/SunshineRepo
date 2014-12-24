@@ -1,13 +1,15 @@
 package com.example.ori.sunshine;
 
-
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
-import com.example.ori.sunshine.app.data.WeatherContract.WeatherEntry;
+import com.example.ori.sunshine.app.data.WeatherContract;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -42,7 +44,6 @@ public class SettingsActivity extends PreferenceActivity
      * is changed.)
      */
     private void bindPreferenceSummaryToValue(Preference preference) {
-
         mBindingPreference = true;
 
         // Set the listener to watch for value changes.
@@ -65,16 +66,14 @@ public class SettingsActivity extends PreferenceActivity
         // are we starting the preference activity?
         if ( !mBindingPreference ) {
             if (preference.getKey().equals(getString(R.string.pref_location_key))) {
-                // update the weather database
                 FetchWeatherTask weatherTask = new FetchWeatherTask(this);
                 String location = value.toString();
                 weatherTask.execute(location);
             } else {
                 // notify code that weather may be impacted
-                getContentResolver().notifyChange(WeatherEntry.CONTENT_URI, null);
+                getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
             }
         }
-
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
@@ -91,9 +90,12 @@ public class SettingsActivity extends PreferenceActivity
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public Intent getParentActivityIntent() {
+        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
 }
-
-
 
 /* original activity
 import android.os.Bundle;

@@ -156,9 +156,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // Sort order:  Ascending, by date.
         String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATETEXT + " ASC";
 
+        String dateStr = getArguments().getString(DetailActivity.DATE_KEY);
+
         mLocation = Utility.getPreferredLocation(getActivity());
         Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                mLocation, mDateStr);
+                mLocation, dateStr /*mDateStr*/);
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.

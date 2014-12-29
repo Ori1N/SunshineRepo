@@ -68,7 +68,9 @@ public class SettingsActivity extends PreferenceActivity
 
         // are we starting the preference activity?
         if ( !mBindingPreference ) {
+            // if the location was changed
             if (preference.getKey().equals(getString(R.string.pref_location_key))) {
+                // sync the weather
                 SunshineSyncAdapter.syncImmediately(this);
             } else {
                 // notify code that weather may be impacted

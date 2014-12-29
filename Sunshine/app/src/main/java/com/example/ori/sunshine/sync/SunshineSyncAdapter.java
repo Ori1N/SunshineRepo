@@ -299,15 +299,21 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         static final String FORECAST_BASE_URL =
                 "http://api.openweathermap.org/data/2.5/forecast/daily?";
 
-        static final String QUERY_PARAM = "q";
+        static final String LOCATION_PARAM = "q";
         static final String FORMAT_PARAM = "mode";
         static final String UNITS_PARAM = "units";
         static final String DAYS_PARAM = "cnt";
 
         private interface WeatherService {
-            @GET("/" + FetchWeather.QUERY_PARAM  + "={queryParam}" )
-            String GetWeather(@Path("queryParam")String queryParam,
-                              @Path("queryParam")String queryParam1);
+            @GET(FetchWeather.LOCATION_PARAM  + "={locationParam}" + "&" +
+                    FetchWeather.FORMAT_PARAM  + "={formatParam}" + "&" +
+                    FetchWeather.UNITS_PARAM  + "={unitsParam}" + "&" +
+                    FetchWeather.DAYS_PARAM  + "={daysCountParam}"
+            )
+            String GetWeather(@Path("locationParam")String location,
+                              @Path("formatParam")String format,
+                              @Path("unitsParam")String units,
+                              @Path("daysCountParam")String daysCount);
         }
 
         public static String GetWeather(String locationQuery, String format, String units, int numDays) {
